@@ -6,6 +6,11 @@ Ss = function(str) {
 		var j = str.indexOf('>',i)+1;
 		str = str.slice(0, i)+str.slice(j);
 	}
+	for (var i = str.indexOf('&'); i != -1; i = str.indexOf('&', i))
+	{
+		var j = str.indexOf(';',i)+1;
+		str = str.slice(0, i)+str.slice(j);
+	}
 	return str;
 },
 Fn = function(bkdat) {
@@ -22,7 +27,9 @@ Fn = function(bkdat) {
 	for (var i = 0; i < bkdat.myrefs.length; ++ i) {
 		table.innerHTML += N+Z+Z+'Your Ref:'+B+Z+bkdat.myrefs[i]+C;
 	}
-	table.innerHTML += N+Z+Z+'Passenger'+B+Z+bkdat.lead+C;
+	for (var i = 0; i < bkdat.paxes.length; ++ i) {
+		table.innerHTML += N+Z+Z+'Passenger:'+B+Z+bkdat.paxes[i]+C;
+	}
 	for (var i = 0; i < bkdat.sales.length; ++ i) {
 		var row = N;
 		for (var j = 0; j < bkdat.sales[i].length-1; ++ j) {
@@ -34,9 +41,10 @@ Fn = function(bkdat) {
 	table.innerHTML += N+Z+Z+Z+Z+Z+'<b>Total</b>'+B+Z+bkdat.total+C;
 	table.innerHTML += N+Z+'<b>Balance due</b>'+B+Z+Z+bkdat.owed+C;
 	table.innerHTML += '<tr><td> </td></tr><tr><td> </td></tr>';
-}, Go = function(idid) {
+},
+Go = function(idid) {
 	if(idid >= ids.length) return;
-	var d = new Date(), bkdat = {id: ids[idid], issueDate: d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear(), depDates: [], depTimes: [], depTypes: [], depDescs: [], myrefs: []},
+	var bkdat = {id: ids[idid], depDates: [], depTimes: [], depTypes: [], depDescs: [], myrefs: []},
 	$ = jQuery, tnum = 3, F = function(){if(!--tnum){Fn(bkdat);Go(++idid);}}, i, j;
 	$.get('/render.php?page=booking_bkLoad&mode=e&id='+bkdat.id, function (data) {
 		i = data.indexOf('<td width="90px">Date</td>');
@@ -77,6 +85,17 @@ Fn = function(bkdat) {
 				j = data.indexOf('"', i)-2;
 				var url = "/render.php?page=booking_p-bkPaxEntry&mode=e&bookingID=" + bkdat.id + "&tourID=" + bkdat.tour +
 				"&bookingPaxID=" + data.slice(i, j) + "&depDateID=" + bkdat.depDates[0];
+				i = data.indexOf('<div id="bkPaxBlock"');
+				var endtab = data.indexOf('</table>', i);
+				bkdat.paxes = [];
+				i = data.indexOf('<tr>', i+1);
+				while (i < endtab && i > 0)
+				{
+					i = data.indexOf('<td>', i)+4;
+					j = data.indexOf('<', i);
+					bkdat.paxes.push(data.slice(i, j));
+					i = data.indexOf('<tr>', i+1);
+				}
 			}
 			$.get(url, function(data, textStatus) {
 				if (worked) {
@@ -117,6 +136,9 @@ Fn = function(bkdat) {
 				tmp.push(data.slice(i, j));
 				if (parseInt(tmp[6]) !== 0) bkdat.sales.push(tmp);
 			}
+			j = data.indexOf('</balanceDueDate>');
+			i = j-10;
+			bkdat.issueDate = data.slice(i, j);
 			i = data.indexOf('Total Booking Value:');
 			i = data.indexOf('<td', i);
 			i = data.indexOf('>', i)+1;
@@ -138,7 +160,8 @@ Fn = function(bkdat) {
 		bkdat.lead = data.slice(i, j);
 		F();
 	});
-}, St = function() {
+},
+St = function() {
 	document.body.innerHTML = '<table id="new_tab"></table>';
 	table = document.getElementById('new_tab');
     ids = prompt('What IDs would you like to extract? (space-delimited)').split(' ');
