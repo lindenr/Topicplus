@@ -130,10 +130,10 @@ Go = function(idid) {
 				tmp.push(' ');
 				i = data.indexOf('>', data.indexOf('<td',i))+1;
 				j = data.indexOf('<', i);
-				tmp.push(data.slice(i, j));
+				tmp.push('£'+data.slice(i, j));
 				i = data.indexOf('>', data.indexOf('<td',i))+1;
 				j = data.indexOf('<', i);
-				tmp.push(data.slice(i, j));
+				tmp.push('£'+data.slice(i, j));
 				if (parseInt(tmp[6]) !== 0) bkdat.sales.push(tmp);
 			}
 			j = data.indexOf('</balanceDueDate>');
@@ -143,11 +143,11 @@ Go = function(idid) {
 			i = data.indexOf('<td', i);
 			i = data.indexOf('>', i)+1;
 			j = data.indexOf('<', i);
-			bkdat.total = data.slice(i, j);
+			bkdat.total = '£'+data.slice(i, j);
 			i = data.indexOf('Balance Due:', i);
 			i = data.indexOf('<td>', i)+4;
 			j = data.indexOf('<', i);
-			bkdat.owed = $.trim(data.slice(i,j));
+			bkdat.owed = '£'+$.trim(data.slice(i,j));
 			F();
 		});
 		for (i = data.indexOf('Your Ref:')+11; i != -1+11; i = data.indexOf('Your Ref:', i)+11)
@@ -165,7 +165,7 @@ St = function() {
 	document.body.innerHTML = '<table id="new_tab"></table>';
 	table = document.getElementById('new_tab');
     ids = prompt('What IDs would you like to extract? (space-delimited)').split(' ');
-    Go(0);
+	Go(0);
 };
 Ld('http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', St);
 })(window.document);
