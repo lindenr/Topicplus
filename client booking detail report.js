@@ -38,11 +38,11 @@ Fn = function(bkdat) {
 		row += bkdat.sales[i][j]+C;
 		table.innerHTML += row;
 	}
-	table.innerHTML += N+Z+Z+Z+Z+Z+'<b>Total</b>'+B+Z+bkdat.total+C;
+	table.innerHTML += N+Z+Z+Z+Z+Z+'<b>Total:</b>'+B+Z+bkdat.total+C;
 	for (var i = 0; i < bkdat.receipts.length; ++ i) {
 		table.innerHTML += N+bkdat.receipts[i][0]+B+bkdat.receipts[i][1]+B+bkdat.receipts[i][2]+C;
 	}
-	table.innerHTML += N+Z+'<b>Balance due</b>'+B+Z+Z+bkdat.owed+C;
+	table.innerHTML += N+Z+'<b>Balance due:</b>'+B+Z+Z+bkdat.owed+C;
 	table.innerHTML += '<tr><td> </td></tr><tr><td> </td></tr>';
 },
 Go = function(idid) {
@@ -155,14 +155,20 @@ Go = function(idid) {
 		});
 		$.get('/render.php?page=booking_bkPayments', function(data) {
 			var i = data.indexOf('<div class="displayBlock"'), end = data.indexOf('</table>',i);
-			bkdat.receipts = []
-			for (i = data.indexOf('<tr>',i) + 4; i != -1+4 && i < end; i = data.indexOf('<tr>',i)+4)
+			bkdat.receipts = [];
+			i = data.indexOf('<tr>',i)+4;
+			if(data.indexOf('<i>No Payments</i>') > -1)
+			{
+				bkdat.receipts = [];
+				return F();
+			}
+			for (; i > 3 && i < end; i = data.indexOf('<tr>',i)+4)
 			{
 				var local = [];
 				i += 17;
 				var j = data.indexOf('<',i);
 				local.push(data.slice(i,j));
-				local.push('Recieved:');
+				local.push('Received:');
 				i = data.indexOf('<td align="right">', i)+18;
 				j = data.indexOf('<',i);
 				local.push('£'+data.slice(i,j));
