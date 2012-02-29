@@ -39,13 +39,16 @@ Fn = function(bkdat) {
 		table.innerHTML += row;
 	}
 	table.innerHTML += N+Z+Z+Z+Z+Z+'<b>Total</b>'+B+Z+bkdat.total+C;
+	for (var i = 0; i < bkdat.receipts.length; ++ i) {
+		table.innerHTML += N+bkdat.receipts[i][0]+B+bkdat.receipts[i][1]+B+bkdat.receipts[i][2]+C;
+	}
 	table.innerHTML += N+Z+'<b>Balance due</b>'+B+Z+Z+bkdat.owed+C;
 	table.innerHTML += '<tr><td> </td></tr><tr><td> </td></tr>';
 },
 Go = function(idid) {
 	if(idid >= ids.length) return;
 	var bkdat = {id: ids[idid], depDates: [], depTimes: [], depTypes: [], depDescs: [], myrefs: []},
-	$ = jQuery, tnum = 3, F = function(){if(!--tnum){Fn(bkdat);Go(++idid);}}, i, j;
+	$ = jQuery, tnum = 4, F = function(){if(!--tnum){Fn(bkdat);Go(++idid);}}, i, j;
 	$.get('/render.php?page=booking_bkLoad&mode=e&id='+bkdat.id, function (data) {
 		i = data.indexOf('<td width="90px">Date</td>');
 		for (i = data.indexOf('<tr id="', i); i != -1; i = data.indexOf('<tr id="', i))
@@ -150,6 +153,23 @@ Go = function(idid) {
 			bkdat.owed = '£'+$.trim(data.slice(i,j));
 			F();
 		});
+		$.get('/render.php?page=booking_bkPayments', function(data) {
+			var i = data.indexOf('<div class="displayBlock"'), end = data.indexOf('</table>',i);
+			bkdat.receipts = []
+			for (i = data.indexOf('<tr>',i) + 4; i != -1+4 && i < end; i = data.indexOf('<tr>',i)+4)
+			{
+				var local = [];
+				i += 17;
+				var j = data.indexOf('<',i);
+				local.push(data.slice(i,j));
+				local.push('Recieved:');
+				i = data.indexOf('<td align="right">', i)+18;
+				j = data.indexOf('<',i);
+				local.push('£'+data.slice(i,j));
+				bkdat.receipts.push(local);
+			}
+			F();
+		});
 		for (i = data.indexOf('Your Ref:')+11; i != -1+11; i = data.indexOf('Your Ref:', i)+11)
 		{
 			j = data.indexOf('(', i)-1;
@@ -164,8 +184,8 @@ Go = function(idid) {
 St = function() {
 	document.body.innerHTML = '<table id="new_tab"></table>';
 	table = document.getElementById('new_tab');
-    ids = prompt('What IDs would you like to extract? (space-delimited)').split(' ');
-	Go(0);
+	ids = prompt('What IDs would you like to extract? (space-delimited)').split(' ');
+	jQuery.get('/render.php?page=booking_bkSelect', function(data){Go(0);});
 };
 Ld('http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', St);
 })(window.document);
