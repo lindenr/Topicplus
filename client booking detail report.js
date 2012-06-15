@@ -116,7 +116,7 @@ Go = function(idid) {
 			});
 		});
 		$.get('/render.php?page=booking_bkSales', function (data) {
-			var i = data.indexOf('<table width="95%"'), j, end = data.indexOf('</table>', i);
+			var i = data.indexOf('<table width="100%" class'), j, end = data.indexOf('</table>', i);
 			bkdat.sales = [];
 			for(i = data.indexOf('<tr>', i); i != -1 && i < end; i = data.indexOf('<tr>', i)) {
 				var tmp = [];
