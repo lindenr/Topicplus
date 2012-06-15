@@ -92,7 +92,7 @@ function gO(u) {
 					bookingData.total = data.slice(i, data.indexOf('<', i));
 					i = data.indexOf('Received:</b></td>') + 22;
 					bookingData.rcvd = data.slice(i, data.indexOf('<', i));
-					var beg = data.indexOf('<table width="95%">')+19, end = data.indexOf('</table></div><div style="mar');
+					var beg = data.indexOf('<table width="100%" class')+19, end = data.indexOf('</table></div><div style="mar');
 					if (end == -1) end = data.indexOf('</table></div></div><div class="boxFooter"></div><br />');
 					data = data.slice(beg, end);
 					// cut out the first <tr>
