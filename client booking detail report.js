@@ -51,7 +51,10 @@ Go = function(idid) {
 	$ = jQuery, tnum = 4, F = function(){if(!--tnum){Fn(bkdat);Go(++idid);}}, i, j;
 	$.get('/render.php?page=booking_bkLoad&mode=e&id='+bkdat.id, function (data) {
 		i = data.indexOf('<td width="90px">Date</td>');
-		for (i = data.indexOf('<tr id="', i); i != -1; i = data.indexOf('<tr id="', i))
+		for (i = data.indexOf('<table', i); i != -1; i = data.indexOf('<table', i+1))
+			data = data.slice(0,i)+data.slice(data.indexOf('</table>',i)+8);
+		i = data.indexOf('<td width="90px">Date</td>');
+		for (i = data.indexOf('<tr id', i); i != -1; i = data.indexOf('<tr id', i))
 		{
 			i = data.indexOf('<td>', i) + 4;
 			j = data.indexOf('<', i);
