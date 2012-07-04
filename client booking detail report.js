@@ -59,7 +59,7 @@ Go = function(idid) {
 			i = data.indexOf('<td>', i) + 4;
 			j = data.indexOf('<', i);
 			bkdat.depTimes.push(data.slice(i, j));
-			i = data.indexOf('<td>', i) + 4;
+			i = data.indexOf('<td class="segTravel">', i) + 22;
 			j = data.indexOf('<', i);
 			bkdat.depTypes.push(data.slice(i, j));
 			i = data.indexOf('<td>', i) + 4;
