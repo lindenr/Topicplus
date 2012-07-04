@@ -62,9 +62,10 @@ Go = function(idid) {
 			i = data.indexOf('<td>', i) + 4;
 			j = data.indexOf('<', i);
 			bkdat.depTimes.push(data.slice(i, j));
-			i = data.indexOf('<td class="', i) + 22;
+			i = data.indexOf('<td class="', i);
+			i = data.indexOf('>', i)+1;
 			j = data.indexOf('<', i);
-			bkdat.depTypes.push(data.slice(i, j));
+			bkdat.depTypes.push(data.slice(i, j)+':');
 			i = data.indexOf('<td>', i) + 4;
 			j = data.indexOf('</td>', i);
 			bkdat.depDescs.push(data.slice(i, j));
