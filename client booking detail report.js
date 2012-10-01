@@ -71,6 +71,7 @@ Go = function(idid) {
 			bkdat.depDescs.push(data.slice(i, j));
 		}
 		i = data.indexOf('<td><b>Tour</b></td>')+24;
+		i = data.indexOf('>', i)+1;
 		j = data.indexOf('<', i);
 		bkdat.tour = data.slice(i, j);
 		$.get('/render.php?page=booking_bkBasic', function (data) {
