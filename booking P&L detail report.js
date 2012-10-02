@@ -16,9 +16,11 @@ function gO(u) {
 	var bookingData = {id:u};
 	function dN(){++numdun;if(numdun==4){++I;cS();}}
 	$.get('/render.php?page=booking_bkLoad&mode=e&id='+u, function (data) {
-		var v = data.indexOf('<td><b>Tour</b></td>')+24, w = data.indexOf('<', v);
+		var v = data.indexOf('<td><b>Tour</b></td>')+24;
+		v = data.indexOf('>', v)+1;
+		var w = data.indexOf('<', v);
 		var K = data.slice(v, w);
-		v = data.indexOf('<td><b>Lead:</b></td>')+25; w = data.indexOf('<', v);
+		v = data.indexOf('<td><b>Lead:</b></td>')+29; w = data.indexOf('<', v);
 		var L = data.slice(v, w);
 		if (K == '' || !/\S/.test(L))
 		{
